@@ -1,8 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link rel="icon" href="images/favicon.png">
+
 <meta charset="UTF-8">
 <title> Royal Shoes</title>
+<meta name="description" content="Royal Shoes – Quality footwear for Men, Women and Kids. Best shoe store in town with affordable prices.">
 
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Inter&display=swap" rel="stylesheet">
@@ -17,13 +20,19 @@
   <div class="logo">Royal Shoes</div>
 
   <nav>
+    <!--
     <a href="index.html">Home</a>
     <a href="about.html">About</a>
     <a href="gallery.html">Gallery</a>
     <a href="contact.html">Contact</a>
+  -->
+    <a href="#home" class="naclink active" onclick="showSection('home',this)">Home</a>
+    <a href="#about" class="navlink" onclick="showSection('about',this)">About</a>
+    <a href="#gallery" class="navlink" onclick="showSection('gallery',this)">Gallery</a>
+    <a href="#contact" class="navlink" onclick="showSection('contact',this)">Contact</a>
   </nav>
 </header>
-
+<section id="home" class="page">
 <section class="hero">
   <h1>Best Shoes in Town</h1>
   <p>Quality footwear for Men, Women & Kids</p>
@@ -31,7 +40,9 @@
 </section>
 
 <div class="slider">
-    <section style="text-align:center;padding:30px;">
+    
+  <img id="slide" src="images/shoe1.jpg">
+  <section style="text-align:center;padding:30px;">
 <h2>Follow Us on Instagram</h2>
 <p>@royalshoes</p>
 
@@ -39,10 +50,55 @@
 Visit Instagram
 </a>
     </section>
-  <img id="slide" src="images/shoe1.jpg">
 </div>
-<a href="https://wa.me/917279222292" class="whatsapp" target="_blank">💬</a>
+<section class="features">
+  <div class="card">👞 Men</div>
+  <div class="card">👠 Women</div>
+  <div class="card">🧒 Kids</div>
+</section>
+</section>
+
+<section id="about" class="page" style="display:none;">
+  <h1>About Royal Shoes</h1>
+
+<p style="margin-top:15px;color:#334155;">
+Royal Shoes is your trusted local footwear store providing quality shoes for Men, Women and Kids.
+We focus on comfort, affordability and customer satisfaction.
+</p>
+
+<p style="margin-top:10px;color:#334155;">
+Serving our community with love and dedication.
+Visit us for the best footwear deals in town.</p>
+</section>
+
+<section id="gallery" class="page" style="display:none;">
+<h2 style="text-align:center;margin:20px;">Our Collection</h2>
+<div class="gallery">
+<img src="images/shoe1.jpg">
+<img src="images/shoe2.jpg">
+<img src="images/shoe3.jpg">
+</div>
+</section>
+<section id="contact" class="page" style="display:none;padding:30px;text-align:center;">
+<h2>Contact Us</h2>
+<p>📍 ROYAL SHOES, Main Road, Navapur</p>
+<p>📞 +91 7249 222 292</p>
+<iframe
+src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.7707881894285!2d73.79302419999999!3d21.1615182!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdfc94f36f21145%3A0x95409f1281fec08!2sROYAL%20SHOES!5e0!3m2!1sen!2sin!4v1770982363938!5m2!1sen!2sin" 
+width="90%" height="300" style="border:0;">
+</iframe>
+
+</section>
+<a href="https://wa.me/917249222292" class="whatsapp" target="_blank">💬</a>
+<footer>
+  <h3>Royal Shoes</h3>
+  <p>Quality footwear for Men, Women & Kids</p>
+  <p>📞 +91 7249222292</p>
+  <p>📍 Royal Shoes, Main Road, Navapur</p>
+  <p style="margin-top:10px;">© 2026 Royal Shoes</p>
+</footer>
+
 <script src="js/script.js"></script>
 
 </body>
-</html>
+</html> 
