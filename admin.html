@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  
+<p style="text-align:center;font-size:14px;color:#666;">
+Use correct category: men / women / kids <br>
+Image must be like: images/shoe1.jpg
+</p>
+
+<title>Admin - Royal Shoes</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+<script>
+// Simple password protection
+let pass = prompt("Enter Admin Password");
+
+if(pass !== "royal123"){
+alert("Access Denied");
+window.location="index.html";
+}
+</script>
+
+<h2 style="text-align:center">Royal Shoes Admin Panel</h2>
+
+<div class="adminBox">
+
+<input id="name" placeholder="Product Name">
+<input id="price" placeholder="Price">
+<input id="image" placeholder="Image path (images/shoe1.jpg)">
+<input id="category" placeholder="Category (men / women / kids)">
+
+<button id="addBtn">Add Product</button>
+</div>
+
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+// Your Firebase config (COPY from index.html exactly)
+const firebaseConfig = {
+  apiKey: "AIzaSyAAiqozHvCE3SIdsZRNiWLU-Z0p435dx2M",
+    authDomain: "royal-shoes-a0b34.firebaseapp.com",
+    projectId: "royal-shoes-a0b34",
+    storageBucket: "royal-shoes-a0b34.firebasestorage.app",
+    messagingSenderId: "766621423045",
+    appId: "1:766621423045:web:7ff1c478aede41fb78a7ac"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Add button event listener
+document.getElementById("addBtn").addEventListener("click", async function(){
+
+  let name = document.getElementById("name").value;
+  let price = Number(document.getElementById("price").value);
+  let image = document.getElementById("image").value;
+  let category = document.getElementById("category").value;
+
+  if(!name || !price || !image || !category){
+    alert("Fill all fields");
+    return;
+  }
+
+  await addDoc(collection(db,"products"),{
+    name: name,
+    price: price,
+    image: image,
+    category: category
+  });
+
+  alert("Product Added");
+  location.reload();
+});
+</script>
+
+
+</body>
+</html>
