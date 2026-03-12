@@ -283,3 +283,26 @@ behavior:"smooth"
 });
 
 }
+// ---------------- HOME PAGE IMAGE SLIDER ----------------
+
+// list of slider images
+let slides = [
+"images/shoe1.jpg",
+"images/shoe2.jpg",
+"images/shoe3.jpg"
+];
+
+let slideIndex = 0;
+
+// change image every few seconds
+setInterval(()=>{
+
+slideIndex++;
+
+if(slideIndex >= slides.length){
+slideIndex = 0;
+}
+
+document.getElementById("slide").src = slides[slideIndex];
+
+},3000);
