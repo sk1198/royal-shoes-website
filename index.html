@@ -1,65 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <link rel="icon" href="images/favicon.png">
 
+<head>
+
+<!-- ======================================================
+     BASIC META
+====================================================== -->
 <meta charset="UTF-8">
-<title> Royal Shoes</title>
+<title>Royal Shoes</title>
 <meta name="description" content="Royal Shoes – Quality footwear for Men, Women and Kids. Best shoe store in town with affordable prices.">
+
+<!-- Favicon -->
+<link rel="icon" href="images/favicon.png">
 
 <!-- Google Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Inter&display=swap" rel="stylesheet">
 
+<!-- Main CSS -->
 <link rel="stylesheet" href="css/style.css">
 
 </head>
 
 <body>
 
-<header>
-  <div class="logo">Royal Shoes</div>
+<!-- ======================================================
+     HEADER + NAVIGATION
+====================================================== -->
 
-  <nav>
-    <!--
-    <a href="index.html">Home</a>
-    <a href="about.html">About</a>
-    <a href="gallery.html">Gallery</a>
-    <a href="contact.html">Contact</a>
-  -->
-    <a href="#home" class="naclink active" onclick="showSection('home',this)">Home</a>
-    <a href="#about" class="navlink" onclick="showSection('about',this)">About</a>
-    <a href="#gallery" class="navlink" onclick="showSection('gallery',this)">Gallery</a>
-    <a href="#contact" class="navlink" onclick="showSection('contact',this)">Contact</a>
-  </nav>
+<header>
+
+<div class="logo">Royal Shoes</div>
+
+<nav>
+
+<a href="#home" class="navlink active" onclick="showSection('home',this)">Home</a>
+
+<a href="#about" class="navlink" onclick="showSection('about',this)">About</a>
+
+<a href="#gallery" class="navlink" onclick="showSection('gallery',this)">Store</a>
+
+<a href="#contact" class="navlink" onclick="showSection('contact',this)">Contact</a>
+
+</nav>
+
 </header>
+
+
+<!-- ======================================================
+     HOME SECTION
+====================================================== -->
+
 <section id="home" class="page">
+
+<!-- HERO SECTION -->
 <section class="hero">
-  <h1>Best Shoes in Town</h1>
-  <p>Quality footwear for Men, Women & Kids</p>
-  <button>Visit Store</button>
+
+<h1>Best Shoes in Town</h1>
+
+<p>Quality footwear for Men, Women & Kids</p>
+
+<button onclick="openStore()">Visit Store</button>
+
 </section>
 
+
+<!-- SLIDER / PROMOTION AREA -->
 <div class="slider">
-    
-  <img id="slide" src="images/shoe1.jpg">
-  <section style="text-align:center;padding:30px;">
+
+<img id="slide" src="images/shoe1.jpg">
+
+<section style="text-align:center;padding:30px;">
+
 <h2>Follow Us on Instagram</h2>
+
 <p>@royalshoes</p>
 
 <a href="https://www.instagram.com/royalshoes_navapur/" target="_blank">
 Visit Instagram
 </a>
-    </section>
-</div>
-<section class="features">
-  <div class="card">👞 Men</div>
-  <div class="card">👠 Women</div>
-  <div class="card">🧒 Kids</div>
-</section>
+
 </section>
 
+</div>
+
+<!-- ======================================================
+     TODAY'S OFFERS
+====================================================== -->
+
+<section class="offerBanner">
+
+<h2>🔥 Today's Offer</h2>
+
+<p id="offerText">
+Flat 10% OFF on Sports Shoes
+</p>
+
+</section>
+<!-- CATEGORY HIGHLIGHTS -->
+<section class="features">
+
+<!-- Clicking these opens store with filter applied -->
+
+<div class="card" onclick="openCategory('men')">
+👞 Men
+</div>
+
+<div class="card" onclick="openCategory('women')">
+👠 Women
+</div>
+
+<div class="card" onclick="openCategory('kids')">
+🧒 Kids
+</div>
+
+</section>
+
+</section>
+
+
+
+<!-- ======================================================
+     ABOUT SECTION
+====================================================== -->
+
 <section id="about" class="page" style="display:none;">
-  <h1>About Royal Shoes</h1>
+
+<h1>About Royal Shoes</h1>
 
 <p style="margin-top:15px;color:#334155;">
 Royal Shoes is your trusted local footwear store providing quality shoes for Men, Women and Kids.
@@ -68,74 +134,137 @@ We focus on comfort, affordability and customer satisfaction.
 
 <p style="margin-top:10px;color:#334155;">
 Serving our community with love and dedication.
-Visit us for the best footwear deals in town.</p>
+Visit us for the best footwear deals in town.
+</p>
+
 </section>
 
-<section id="gallery" class="page" style="display:none;">
-  <h2>Our Collection</h2>
 
-  <div style="text-align:center;margin:10px;">
+
+<!-- ======================================================
+     STORE / PRODUCT GALLERY
+====================================================== -->
+
+<section id="gallery" class="page" style="display:none;">
+
+<h2>Our Collection</h2>
+
+<!-- Category Filters -->
+<div class="storeFilters">
+
 <button onclick="filterCategory('all')">All</button>
 <button onclick="filterCategory('men')">Men</button>
 <button onclick="filterCategory('women')">Women</button>
 <button onclick="filterCategory('kids')">Kids</button>
+
 </div>
 
-  <div class="gallery" id="productList"></div>
+<!-- Product container (dynamic) -->
+<div class="gallery" id="productList"></div>
+
 </section>
 
+
+
+<!-- ======================================================
+     CONTACT SECTION
+====================================================== -->
+
 <section id="contact" class="page" style="display:none;padding:30px;text-align:center;">
+
 <h2>Contact Us</h2>
+
 <p>📍 ROYAL SHOES, Main Road, Navapur</p>
+
 <p>📞 +91 7249 222 292</p>
+
+<!-- Google Map -->
 <iframe
-src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.7707881894285!2d73.79302419999999!3d21.1615182!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdfc94f36f21145%3A0x95409f1281fec08!2sROYAL%20SHOES!5e0!3m2!1sen!2sin!4v1770982363938!5m2!1sen!2sin" 
+src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3720.7707881894285!2d73.79302419999999!3d21.1615182!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bdfc94f36f21145%3A0x95409f1281fec08!2sROYAL%20SHOES!5e0!3m2!1sen!2sin!4v1770982363938!5m2!1sen!2sin"
 width="90%" height="300" style="border:0;">
 </iframe>
 
 </section>
-<a href="https://wa.me/917249222292" class="whatsapp" target="_blank">💬</a>
+
+
+
+<!-- ======================================================
+     WHATSAPP FLOAT BUTTON
+====================================================== -->
+
+<a href="https://wa.me/917249222292" class="whatsapp" target="_blank">
+💬
+</a>
+
+
+
+<!-- ======================================================
+     FOOTER
+====================================================== -->
+
 <footer>
-  <h3>Royal Shoes</h3>
-  <p>Quality footwear for Men, Women & Kids</p>
-  <p>📞 +91 7249222292</p>
-  <p>📍 Royal Shoes, Main Road, Navapur</p>
-  <p style="margin-top:10px;">© 2026 Royal Shoes</p>
+
+<h3>Royal Shoes</h3>
+
+<p>Quality footwear for Men, Women & Kids</p>
+
+<p>📞 +91 7249222292</p>
+
+<p>📍 Royal Shoes, Main Road, Navapur</p>
+
+<p style="margin-top:10px;">© 2026 Royal Shoes</p>
+
 </footer>
+
+
+
+<!-- ======================================================
+     FIREBASE INITIALIZATION
+====================================================== -->
+
 <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-  import { getFirestore, collection, getDocs, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-  window.doc = doc;
-  window.deleteDoc = deleteDoc;
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import { getFirestore, collection, getDocs, doc, deleteDoc } 
+from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+// Firebase configuration
+const firebaseConfig = {
+apiKey: "AIzaSyAAiqozHvCE3SIdsZRNiWLU-Z0p435dx2M",
+authDomain: "royal-shoes-a0b34.firebaseapp.com",
+projectId: "royal-shoes-a0b34",
+storageBucket: "royal-shoes-a0b34.firebasestorage.app",
+messagingSenderId: "766621423045",
+appId: "1:766621423045:web:7ff1c478aede41fb78a7ac"
+};
 
-  // Your web app's Firebase configuration
-  const firebaseConfig = {
-    apiKey: "AIzaSyAAiqozHvCE3SIdsZRNiWLU-Z0p435dx2M",
-    authDomain: "royal-shoes-a0b34.firebaseapp.com",
-    projectId: "royal-shoes-a0b34",
-    storageBucket: "royal-shoes-a0b34.firebasestorage.app",
-    messagingSenderId: "766621423045",
-    appId: "1:766621423045:web:7ff1c478aede41fb78a7ac"
-  };
 
-  // Initialize Firebase
-  const app = initializeApp(firebaseConfig);
-  const db = getFirestore(app);
-  window.db = db;
-  window.getDocs = getDocs;
-  window.collection = collection;
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
-  window.doc = doc;
-  window.deleteDoc = deleteDoc;
+
+// Expose Firestore helpers globally
+window.db = db;
+window.getDocs = getDocs;
+window.collection = collection;
+window.doc = doc;
+window.deleteDoc = deleteDoc;
 
 </script>
+
+
+
+<!-- MAIN WEBSITE SCRIPT -->
 <script src="js/script.js"></script>
 
+<!-- ======================================================
+     BACK TO TOP BUTTON
+====================================================== -->
+
+<button id="backToTop" onclick="scrollToTop()">↑</button>
 </body>
-</html> 
+
+</html>

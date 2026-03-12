@@ -1,45 +1,127 @@
 <!DOCTYPE html>
 <html>
 <head>
-  
-<p style="text-align:center;font-size:14px;color:#666;">
-Use correct category: men / women / kids <br>
-Image must be like: images/shoe1.jpg
-</p>
-
 <title>Admin - Royal Shoes</title>
 <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
-<script>
-// Simple password protection
-let pass = prompt("Enter Admin Password");
 
-if(pass !== "royal123"){
-alert("Access Denied");
-window.location="index.html";
-}
-</script>
+<div class="adminLayout">
 
-<h2 style="text-align:center">Royal Shoes Admin Panel</h2>
+<!-- SIDEBAR --> 
+<div class="sidebar">
+<h2>Royal Shoes</h2>
 
-<div class="adminBox">
+<ul>
+<li id="tabProducts">📦 Products</li>
+<li id="tabCategories">📂 Categories</li>
+<li id="tabTypes">🏷 Types</li>
+</ul>
+
+<button id="logoutBtn">Logout</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="mainContent">
+
+<!-- PRODUCTS PAGE -->
+<div id="productsPage">
+
+<div class="productsContainer">
+
+<!-- PRODUCT LIST -->
+<div class="productList">
+<input id="searchProducts" placeholder="Search products..." style="width:100%;margin-bottom:10px;">
+<h3>Products</h3>
+
+<table id="productTable">
+<thead>
+<tr>
+<th>Image</th>
+<th>Name</th>
+<th>Price</th>
+<th>Category</th>
+<th>Type</th>
+<th>Status</th>
+<th>Actions</th>
+</tr>
+</thead>
+
+<tbody></tbody>
+
+</table>
+
+</div>
+
+<!-- ADD PRODUCT FORM -->
+<div class="productForm">
+
+<h3>Add / Edit Product</h3>
 
 <input id="name" placeholder="Product Name">
 <input id="price" placeholder="Price">
-<input id="image" placeholder="Image path (images/shoe1.jpg)">
-<input id="category" placeholder="Category (men / women / kids)">
 
-<button id="addBtn">Add Product</button>
+<select id="categorySelect">
+<option value="">Select Category</option>
+</select>
+
+<select id="typeSelect">
+<option value="">Select Type</option>
+</select>
+<select id="statusSelect">
+<option value="In Stock">In Stock</option>
+<option value="Limited">Limited</option>
+<option value="Out of Stock">Out of Stock</option>
+</select>
+<input type="file" id="imageFile" accept="image/*">
+
+<button id="addBtn">Save Product</button>
+
 </div>
+
+</div>
+
+</div>
+
+<!-- CATEGORIES PAGE -->
+<div id="categoriesPage" style="display:none">
+
+<h3>Categories</h3>
+
+<input id="newCategory" placeholder="New Category">
+<button id="addCategoryBtn">Add Category</button>
+
+<ul id="categoryList"></ul>
+
+</div>
+
+<!-- TYPES PAGE -->
+<div id="typesPage" style="display:none">
+
+<h3>Types</h3>
+
+<input id="newType" placeholder="New Type">
+<button id="addTypeBtn">Add Type</button>
+
+<ul id="typeList"></ul>
+
+</div>
+
+</div>
+
+</div>
+
 
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+import { getDocs, doc, deleteDoc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// Your Firebase config (COPY from index.html exactly)
+// ⚠️ COPY EXACT firebaseConfig FROM index.html
 const firebaseConfig = {
   apiKey: "AIzaSyAAiqozHvCE3SIdsZRNiWLU-Z0p435dx2M",
     authDomain: "royal-shoes-a0b34.firebaseapp.com",
@@ -47,37 +129,387 @@ const firebaseConfig = {
     storageBucket: "royal-shoes-a0b34.firebasestorage.app",
     messagingSenderId: "766621423045",
     appId: "1:766621423045:web:7ff1c478aede41fb78a7ac"
+  
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const auth = getAuth(app);
+const storage = getStorage(app);
 
-// Add button event listener
+// Protect page properly
+onAuthStateChanged(auth, (user) => {
+
+if(user){
+    console.log("Admin logged in");
+}else{
+    window.location.href = "login.html";
+}
+
+});
+
+// Load categories from Firestore and fill dropdown
+let categoryMap = {};
+let typeMap = {};
+
+async function loadCategories(){
+
+const snapshot = await getDocs(collection(db,"categories"));
+
+const select = document.getElementById("categorySelect");
+
+// reset dropdown
+select.innerHTML = '<option value="">Select Category</option>';
+
+snapshot.forEach((docSnap) => {
+
+let data = docSnap.data();
+
+// store name in map
+categoryMap[docSnap.id] = data.name;
+
+let option = document.createElement("option");
+
+option.value = docSnap.id;
+option.textContent = data.name;
+
+select.appendChild(option);
+
+});
+
+}
+
+// run function
+loadCategories();
+
+// Load products from Firestore and show in table
+async function loadProducts(){
+
+console.log("loadProducts started");
+
+const snapshot = await getDocs(collection(db,"products"));
+
+console.log("Products loaded:", snapshot.size);
+
+const tbody = document.querySelector("#productTable tbody");
+
+tbody.innerHTML = "";
+
+snapshot.forEach((docSnap)=>{
+
+const p = docSnap.data();
+
+tbody.innerHTML += `
+<tr>
+<td><img src="${p.imageURL}" width="50"></td>
+<td>${p.name}</td>
+<td>₹${p.price}</td>
+<td>${categoryMap[p.categoryId] || "Unknown"}</td>
+<td>${typeMap[p.typeId] || "Unknown"}</td>
+<td>${p.status || "In Stock"}</td>
+<button onclick="editProduct('${docSnap.id}')">Edit</button>
+<button onclick="deleteProduct('${docSnap.id}')">Delete</button>
+</td>
+</tr>
+`;
+
+});
+
+}
+async function loadTypes(){
+
+const snapshot = await getDocs(collection(db,"types"));
+
+const select = document.getElementById("typeSelect");
+
+select.innerHTML='<option value="">Select Type</option>';
+
+snapshot.forEach((docSnap)=>{
+
+let data = docSnap.data();
+
+typeMap[docSnap.id] = data.name;
+
+let option=document.createElement("option");
+
+option.value=docSnap.id;
+option.textContent=data.name;
+
+select.appendChild(option);
+
+});
+
+}
+// run function
+loadProducts();
+
+
+// Add product with Cloudinary upload
 document.getElementById("addBtn").addEventListener("click", async function(){
 
-  let name = document.getElementById("name").value;
-  let price = Number(document.getElementById("price").value);
-  let image = document.getElementById("image").value;
-  let category = document.getElementById("category").value;
+let name = document.getElementById("name").value;
+let price = Number(document.getElementById("price").value);
+let categoryId = document.getElementById("categorySelect").value;
+let typeId = document.getElementById("typeSelect").value;
+let status = document.getElementById("statusSelect").value;
+let file = document.getElementById("imageFile").files[0];
 
-  if(!name || !price || !image || !category){
-    alert("Fill all fields");
-    return;
+if(!name || !price || !categoryId || !file){
+alert("Fill all fields and select image");
+return;
+}
+
+// Prepare upload to Cloudinary
+let formData = new FormData();
+formData.append("file", file);
+formData.append("upload_preset", "royal_shoes_upload");
+
+// Upload image
+let response = await fetch(
+"https://api.cloudinary.com/v1_1/dmvig1bmj/image/upload",
+{
+method:"POST",
+body:formData
+}
+);
+
+let data = await response.json();
+let imageURL = data.secure_url;
+
+// Save product in Firestore
+if(window.editingProductId){
+
+await updateDoc(doc(db,"products",window.editingProductId),{
+name:name,
+price:price,
+categoryId:categoryId,
+typeId:typeId,
+status:status,
+imageURL:imageURL
+});
+
+window.editingProductId = null;
+
+}else{
+
+await addDoc(collection(db,"products"),{
+name:name,
+price:price,
+categoryId:categoryId,
+typeId:typeId,
+status:status,
+imageURL:imageURL
+});
+
+}
+
+alert("Product Added Successfully");
+
+//location.reload();
+loadProducts();
+});
+
+// Delete product
+window.deleteProduct = async function(id){
+
+if(confirm("Delete this product?")){
+
+await deleteDoc(doc(db,"products",id));
+
+loadProducts();
+
+}
+
+}
+window.editProduct = async function(id){
+
+const productDoc = await getDocs(collection(db,"products"));
+
+productDoc.forEach((docSnap)=>{
+
+if(docSnap.id === id){
+
+const data = docSnap.data();
+
+document.getElementById("name").value = data.name;
+document.getElementById("price").value = data.price;
+document.getElementById("categorySelect").value = data.categoryId;
+document.getElementById("typeSelect").value = data.typeId;
+document.getElementById("statusSelect").value = data.status||"In Stock";
+window.editingProductId = id;
+
+}
+
+});
+
+};
+ 
+// TAB SWITCHING
+
+document.getElementById("tabProducts").onclick = ()=>{
+document.getElementById("productsPage").style.display="block";
+document.getElementById("categoriesPage").style.display="none";
+document.getElementById("typesPage").style.display="none";
+};
+
+document.getElementById("tabCategories").onclick = ()=>{
+document.getElementById("productsPage").style.display="none";
+document.getElementById("categoriesPage").style.display="block";
+document.getElementById("typesPage").style.display="none";
+};
+
+document.getElementById("tabTypes").onclick = ()=>{
+document.getElementById("productsPage").style.display="none";
+document.getElementById("categoriesPage").style.display="none";
+document.getElementById("typesPage").style.display="block";
+};
+// Add category logic
+document.getElementById("addCategoryBtn").onclick = async ()=>{
+
+let name = document.getElementById("newCategory").value;
+
+if(!name){
+alert("Enter category name");
+return;
+}
+
+await addDoc(collection(db,"categories"),{
+name:name
+});
+
+document.getElementById("newCategory").value="";
+
+loadCategoryList();
+loadCategories();
+
+};
+// Load categories in list
+async function loadCategoryList(){
+
+const snapshot = await getDocs(collection(db,"categories"));
+
+const list = document.getElementById("categoryList");
+
+list.innerHTML="";
+
+snapshot.forEach((docSnap)=>{
+
+let data = docSnap.data();
+
+let li = document.createElement("li");
+
+li.innerHTML = `
+${data.name}
+<button onclick="deleteCategory('${docSnap.id}')">Delete</button>
+`;
+
+list.appendChild(li);
+
+});
+
+}
+
+loadCategoryList();
+// Delete category
+window.deleteCategory = async function(id){
+
+if(confirm("Delete this category?")){
+
+await deleteDoc(doc(db,"categories",id));
+
+loadCategoryList();
+loadCategories();
+
+}
+
+};
+// Add type logic
+document.getElementById("addTypeBtn").onclick = async ()=>{
+
+let name = document.getElementById("newType").value;
+
+if(!name){
+alert("Enter type name");
+return;
+}
+
+await addDoc(collection(db,"types"),{
+name:name
+});
+
+document.getElementById("newType").value="";
+
+loadTypeList();
+
+};
+// Load types in list
+async function loadTypeList(){
+
+const snapshot = await getDocs(collection(db,"types"));
+
+const list = document.getElementById("typeList");
+
+list.innerHTML="";
+
+snapshot.forEach((docSnap)=>{
+
+let data = docSnap.data();
+
+let li = document.createElement("li");
+
+li.innerHTML = `
+${data.name}
+<button onclick="deleteType('${docSnap.id}')">Delete</button>
+`;
+
+list.appendChild(li);
+
+});
+
+}
+
+loadTypeList();
+// delete type
+window.deleteType = async function(id){ 
+  if(confirm("Delete this type?")){
+    await deleteDoc(doc(db,"types",id));
+    loadTypeList();
   }
+};
+// Load types in list
+/*async function loadTypes(){
 
-  await addDoc(collection(db,"products"),{
-    name: name,
-    price: price,
-    image: image,
-    category: category
-  });
+const snapshot = await getDocs(collection(db,"types"));
 
-  alert("Product Added");
-  location.reload();
+const select = document.getElementById("typeSelect");
+
+select.innerHTML='<option value="">Select Type</option>';
+
+snapshot.forEach((docSnap)=>{
+
+let data = docSnap.data();
+
+typeMap[docSnap.id] = data.name;
+
+let option=document.createElement("option");
+
+option.value=docSnap.id;
+option.textContent=data.name;
+
+select.appendChild(option);
+
+});
+
+}*/
+
+loadTypes();
+
+// Logout
+document.getElementById("logoutBtn").addEventListener("click", async ()=>{
+  await signOut(auth);
+  window.location = "login.html";
 });
 </script>
-
 
 </body>
 </html>
